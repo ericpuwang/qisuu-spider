@@ -13,6 +13,7 @@ class Downloader(Thread):
 
     def __init__(self, url):
         self.url = url
+        self.log = QisuuLog()
 
         while threading.activeCount() > _max_thread_num:
             time.sleep(5)
@@ -24,15 +25,16 @@ class Downloader(Thread):
             req = Request(self.url)
             res = urlopen(req)
             self.context = res.read()
+            message = 'download {url} succ'.format(url=self.url,)
+            self.log.debug(message)
         except Exception, e:
             self.context = ''
             current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            err_message = '{time} download {url} failure for {message}'.format(
-                time=current_time,
+            err_message = 'download {url} failure for {message}'.format(
                 url=self.url,
                 message=e.message,
             )
-            QisuuLog(err_message)
+            self.log.error(err_message)
 
     def run(self):
         self.download()

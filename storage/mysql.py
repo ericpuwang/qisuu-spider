@@ -1,6 +1,7 @@
 #! /bin/python
 # coding: utf-8
 
+from logs.QisuuLog import QisuuLog
 import MySQLdb
 
 class MySQL(object):
@@ -10,9 +11,19 @@ class MySQL(object):
         self.user = user
         self.passwd = passwd
         self.dbname = dbname
+        self.connect()
+        self.log = QisuuLog()
 
     def connect(self):
-        self.db = MySQLdb.connect(self.host, self.user, self.passwd, self.dbname)
+        try:
+            self.db = MySQLdb.connect(self.host, self.user, self.passwd, self.dbname)
+            self.log.debug('connect db {name} succ'.format(name=self.dbname,))
+        except Exception, e:
+            message = 'connect db {name} failure for {message}'.format(
+                name=self.dbname,
+                message=e.message,
+            )
+            self.log.error(message)
         self.cursor = self.db.cursor()
 
     def select(self, sql):
