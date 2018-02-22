@@ -5,8 +5,11 @@ from bs4 import BeautifulSoup
 from threading import Thread
 from urlparse import urljoin
 from download.QisuuThread import Downloader
+from queue.QisuuQueue import DuplexQueue
 from storage.mysql import MySQL
 import threading
+
+_duplex_queue = DuplexQueue()
 
 class Parser(Thread):
     '''
@@ -15,8 +18,8 @@ class Parser(Thread):
     '''
     root_url = 'https://www.qisuu.com'
 
-    def __init__(self, content):
-        self.content = content
+    def __init__(self):
+        self.content = _duplex_queue.leftpop()['content']
         self.soup = BeautifulSoup(self.content, 'html.parser')
         self.stories = self.soup.find('div', {'class':'list'})
         self.mysql = MySQL('qisuu')
@@ -35,7 +38,7 @@ class Parser(Thread):
 
         self.content_url = urljoin(self.root_url, relative_content_url)
         self.image_url = urljoin(self.root_url, relative_image_url)
-        download_content = Downloader(self.content_url)
+        download_content = Downloader()
         download_content.start()
         download_content.join()
 

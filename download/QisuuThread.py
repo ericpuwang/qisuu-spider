@@ -4,15 +4,18 @@
 from urllib2 import Request, urlopen
 from threading import Thread
 from logs.QisuuLog import QisuuLog
+from queue.QisuuQueue import DuplexQueue
 import threading
 import time
 
 _max_thread_num = 15
+_duplex_queue = DuplexQueue()
+
 
 class Downloader(Thread):
 
-    def __init__(self, url):
-        self.url = url
+    def __init__(self):
+        self.url = _duplex_queue.rightpop()
         self.log = QisuuLog()
 
         while threading.activeCount() > _max_thread_num:
@@ -39,6 +42,7 @@ class Downloader(Thread):
     def run(self):
         self.download()
         if self.context:
+            _duplex_queue.leftpush({'url': self.url, 'content': self.context})
             print 'download \033[32m {url} \033[0m succ'.format(url=self.url,)
         else:
             print 'download \033[31m {url} \033[0m fail'.format(url=self.url,)
