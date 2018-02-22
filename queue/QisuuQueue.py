@@ -3,7 +3,7 @@
 
 import Queue
 
-class DuplexQueue(Singleton):
+class DuplexQueue(object):
     _instance = None
 
     def __new__(cls, *args, **kwargs):
