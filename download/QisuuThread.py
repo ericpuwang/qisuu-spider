@@ -14,8 +14,8 @@ _duplex_queue = DuplexQueue()
 
 class Downloader(Thread):
 
-    def __init__(self):
-        self.url = _duplex_queue.rightpop()
+    def __init__(self, url):
+        self.url = url
         self.log = QisuuLog()
 
         while threading.activeCount() > _max_thread_num:
