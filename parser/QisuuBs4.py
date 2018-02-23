@@ -29,31 +29,6 @@ class Parser(Thread):
         # 获取每种小说类型的展示页数
         self.page_num = len(self.soup.find('select', {'name':'select'}).findAll('option'))
 
-    def getAllStory(self):
-        all_story = self.stories.findAll('li')
-        for story in all_story:
-            self.StoryDetail(story)
-
-    # 获取每本小说的详细信息
-    def StoryDetail(self, story):
-        relative_content_url = story.find('a')['href']        # 小说的相对路径
-        relative_image_url = story.find('a').img['src']       # 小说图片的相对路径
-
-        self.content_url = urljoin(self.root_url, relative_content_url)
-        #self.image_url = urljoin(self.root_url, relative_image_url)
-        _duplex_queue.rightpush(self.content_url)
-
-        self.parseDetail()
-        sql = ('INSERT INTO story(name, content_url, image_url, size, author) '
-            'VALUES({name}, {content_url}, {image_url}, {size}, {author})').format(
-                name = self.name,
-                content_url=self.content_url,
-                image_url=self.image_url,
-                size=self.size,
-                author=self.author,
-            )
-        self.mysql.insert(sql)
-
     def run(self):
         self.getAllStory()
 
@@ -70,17 +45,17 @@ class Parser(Thread):
         for story in story_list:
             relative_content_url = story.find('a')['href']
             self.content_url = urljoin(self.root_url, relative_content_url)
-            _duplex_queue.rightpush(content_url)
+            _duplex_queue.rightpush(self.content_url)
 
     '''
     获取小说的具体信息
     '''
     def _detail(self):
         info = self.soup.find('div', {'class':'detail_right'})
-        self.name = self.info.h1.text
-        #self.image_url = 
-        self.size = self.info.ul.findAll('li')[3].text.split(u'：')[1]
-        self.author = self.info.ul.findAll('li')[5].text.split(u'：')[1]
+        self.name = info.h1.text
+        self.image_url = None
+        self.size = info.ul.findAll('li')[3].text.split(u'：')[1]
+        self.author = info.ul.findAll('li')[5].text.split(u'：')[1]
 
     '''
     解析页面内容
@@ -90,3 +65,13 @@ class Parser(Thread):
             self._list()
         else:
             self._detail()
+
+            sql = ('INSERT INTO story(name, content_url, image_url, size, author) '
+                'VALUES({name}, {content_url}, {image_url}, {size}, {author})').format(
+                    name=self.name,
+                    content_url=self.content_url,
+                    image_url=self.image_url,
+                    size=self.size,
+                    author=self.author,
+                )
+            self.mysql.insert(sql)
