@@ -25,6 +25,9 @@ def download():
     for thread in down_thread:
         thread.start()
 
+    while _duplex_queue.rightempty():
+        time.sleep(5)
+
     while not _duplex_queue.rightempty():
         for thread in down_thread:
             if not thread.isAlive():

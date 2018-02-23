@@ -20,8 +20,6 @@ class Downloader(Thread):
 
     def download(self):
         try:
-            if not self.url:
-                return
             req = Request(self.url)
             res = urlopen(req)
             self.context = res.read()
@@ -38,6 +36,8 @@ class Downloader(Thread):
             self.log.error(err_message)
 
     def run(self):
+        if not self.url:
+            return
         self.download()
         if self.context:
             _duplex_queue.leftpush({'url': self.url, 'content': self.context})
