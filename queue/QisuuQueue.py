@@ -25,6 +25,9 @@ class DuplexQueue(object):
         except Queue.Empty:
             return None
 
+    def leftempty(self):
+        return self.leftqueue.empty()
+
     def rightpush(self, element):
         self.rightqueue.put(element)
 
@@ -33,5 +36,8 @@ class DuplexQueue(object):
             return self.rightqueue.get_nowait()
         except Queue.Empty:
             return None
+
+    def rightempty(self):
+        return self.rightqueue.empty()
 
     

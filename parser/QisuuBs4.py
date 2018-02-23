@@ -4,7 +4,6 @@
 from bs4 import BeautifulSoup
 from threading import Thread
 from urlparse import urljoin
-from download.QisuuThread import Downloader
 from queue.QisuuQueue import DuplexQueue
 from storage.mysql import MySQL
 import threading
@@ -30,7 +29,7 @@ class Parser(Thread):
         self.page_num = len(self.soup.find('select', {'name':'select'}).findAll('option'))
 
     def run(self):
-        self.getAllStory()
+        self.parse()
 
     '''
     获取小说列表

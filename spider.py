@@ -8,8 +8,47 @@ relative_url
 
 from download.QisuuThread import Downloader
 from parser.QisuuBs4 import Parser
+from queue.QisuuQueue import DuplexQueue
+import threading
+import time
 
-class QisuuSpider(object):
+_duplex_queue = DuplexQueue()
+_duplex_queue.rightpush('https://www.qisuu.com/soft/sort01/')
+_max_down_thread_num = 10
+_max_parse_thread_num = 5
 
-    def __init__(self):
-        pass
+def download():
+    down_thread = []
+    for i in range(_max_down_thread_num):
+        down_thread.append(Downloader())
+
+    for thread in down_thread:
+        thread.start()
+
+    while not _duplex_queue.rightempty():
+        for thread in down_thread:
+            if not thread.isAlive():
+                thread = Downloader()
+                thread.start()
+
+def parser():
+    parse_thraed = []
+    for i in range(_max_parse_thread_num):
+        parse_thraed.append(Parser())
+
+    for thread in parse_thraed:
+        thread.start()
+
+    while not _duplex_queue.leftempty():
+        for thread in parse_thraed:
+            if not thread.isAlive():
+                thread = Parser()
+                thread.start()
+
+if __name__ == '__main__':
+    down = threading.Thread(target=download)
+    down.start()
+
+    if not _duplex_queue.leftempty():
+        parse = threading.Thread(target=parser)
+        parse.start()

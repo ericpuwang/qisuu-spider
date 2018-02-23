@@ -8,18 +8,13 @@ from queue.QisuuQueue import DuplexQueue
 import threading
 import time
 
-_max_thread_num = 15
 _duplex_queue = DuplexQueue()
-
 
 class Downloader(Thread):
 
     def __init__(self, url):
-        self.url = url
+        self.url = _duplex_queue.rightpop()
         self.log = QisuuLog()
-
-        while threading.activeCount() > _max_thread_num:
-            time.sleep(5)
 
         super(Downloader, self).__init__()
 
@@ -32,6 +27,7 @@ class Downloader(Thread):
             self.log.debug(message)
         except Exception, e:
             self.context = ''
+            _duplex_queue.rightpush(self.url)
             current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             err_message = 'download {url} failure for {message}'.format(
                 url=self.url,
