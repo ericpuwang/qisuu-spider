@@ -12,7 +12,7 @@ _duplex_queue = DuplexQueue()
 
 class Downloader(Thread):
 
-    def __init__(self, url):
+    def __init__(self):
         self.url = _duplex_queue.rightpop()
         self.log = QisuuLog()
 
@@ -20,6 +20,8 @@ class Downloader(Thread):
 
     def download(self):
         try:
+            if not self.url:
+                return
             req = Request(self.url)
             res = urlopen(req)
             self.context = res.read()

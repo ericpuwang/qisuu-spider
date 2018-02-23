@@ -42,7 +42,7 @@ class MySQL(object):
     def delete(self, sql):
         self.change(sql, 'delete')
 
-    def change(self. sql, opt):
+    def change(self, sql, opt):
         try:
             self.cursor.execute(sql)
             self.db.commit()
