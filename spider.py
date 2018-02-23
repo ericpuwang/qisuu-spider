@@ -42,6 +42,9 @@ def parser():
     for thread in parse_thraed:
         thread.start()
 
+    while _duplex_queue.leftempty():
+        time.sleep(5)
+
     while not _duplex_queue.leftempty():
         for thread in parse_thraed:
             if not thread.isAlive():
@@ -52,6 +55,5 @@ if __name__ == '__main__':
     down = threading.Thread(target=download)
     down.start()
 
-    if not _duplex_queue.leftempty():
-        parse = threading.Thread(target=parser)
-        parse.start()
+    parse = threading.Thread(target=parser)
+    parse.start()
