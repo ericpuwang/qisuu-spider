@@ -11,7 +11,7 @@ import re
 
 _duplex_queue = DuplexQueue()
 
-class Parser(Thread):
+class Parser(object):
     '''
     BeautifulSoup
     获取每个页面上展示的所有小说
@@ -20,10 +20,9 @@ class Parser(Thread):
 
     def __init__(self):
         current_info = _duplex_queue.leftpop()
-        import pdb;pdb.set_trace()
         self.url = current_info['url']
         self.content = current_info['content']
-        print 'url: ', self.url, 'content: ', self.content
+        print current_info
         self.soup = BeautifulSoup(self.content, 'html.parser')
         self.mysql = MySQL('qisuu')
 
