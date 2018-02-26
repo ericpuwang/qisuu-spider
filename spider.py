@@ -36,15 +36,15 @@ def download():
 
 def parser():
     parse_thraed = []
+    while _duplex_queue.leftempty():
+        time.sleep(1)
+        
     for i in range(_max_parse_thread_num):
         parse_thraed.append(Parser())
 
     for thread in parse_thraed:
         #thread.start()
         thread.run()
-
-    while _duplex_queue.leftempty():
-        time.sleep(1)
 
     while not _duplex_queue.leftempty():
         for thread in parse_thraed:

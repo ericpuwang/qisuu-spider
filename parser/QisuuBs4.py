@@ -22,7 +22,6 @@ class Parser(object):
         current_info = _duplex_queue.leftpop()
         self.url = current_info['url']
         self.content = current_info['content']
-        print current_info
         self.soup = BeautifulSoup(self.content, 'html.parser')
         self.mysql = MySQL('qisuu')
 
