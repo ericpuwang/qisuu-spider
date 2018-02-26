@@ -57,5 +57,5 @@ if __name__ == '__main__':
     down = threading.Thread(target=download)
     down.start()
 
-    parse = threading.Thread(target=parser)
-    parse.start()
+    parse = Parser()
+    parse.run()
