@@ -11,8 +11,8 @@ class MySQL(object):
         self.user = user
         self.passwd = passwd
         self.dbname = dbname
-        self.connect()
         self.log = QisuuLog()
+        self.connect()
 
     def connect(self):
         try:
@@ -31,6 +31,7 @@ class MySQL(object):
             self.cursor.execute(sql)
             self.results = self.cursor.fetchall()
         except Exception, e:
+            self.log.error(e.message)
             print 'query data failuer for {0}'.format(e.message)
 
     def insert(self, sql):
@@ -48,4 +49,5 @@ class MySQL(object):
             self.db.commit()
         except Exception, e:
             self.db.rollback()
+            self.log.error(e.message)
             print '\033[31m {0} \033[0m data failuer for {1}'.format(opt, e.message)
