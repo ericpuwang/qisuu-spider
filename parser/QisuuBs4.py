@@ -19,8 +19,10 @@ class Parser(Thread):
     root_url = 'https://www.qisuu.com'
 
     def __init__(self):
-        self.url = _duplex_queue.leftpop()['url']
-        self.content = _duplex_queue.leftpop()['content']
+        current_info = _duplex_queue.leftpop()
+        import pdb;pdb.set_trace()
+        self.url = current_info['url']
+        self.content = current_info['content']
         print 'url: ', self.url, 'content: ', self.content
         self.soup = BeautifulSoup(self.content, 'html.parser')
         self.mysql = MySQL('qisuu')
