@@ -17,7 +17,6 @@ class MySQL(object):
     def connect(self):
         try:
             self.db = MySQLdb.connect(self.host, self.user, self.passwd, self.dbname)
-            self.log.debug('connect db {name} succ'.format(name=self.dbname,))
         except Exception, e:
             message = 'connect db {name} failure for {message}'.format(
                 name=self.dbname,

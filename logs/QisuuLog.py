@@ -31,7 +31,7 @@ class QisuuLog(object):
             time=warn_time,
             message=message,
         )
-        logging.info(warn_info)
+        logging.warn(warn_info)
 
     def error(self, message):
         error_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -39,7 +39,7 @@ class QisuuLog(object):
             time=error_time,
             message=message,
         )
-        logging.info(error_info)
+        logging.error(error_info)
 
     def critical(self, message):
         critical_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -47,4 +47,4 @@ class QisuuLog(object):
             time=critical_time,
             message=message,
         )
-        logging.info(critical_info)
+        logging.critical(critical_info)

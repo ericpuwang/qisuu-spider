@@ -20,9 +20,6 @@ class Parser(Thread):
 
     def __init__(self):
         current_info = _duplex_queue.leftpop()
-        if not current_info:
-            return
-        
         self.url = current_info['url']
         self.content = current_info['content']
         self.soup = BeautifulSoup(self.content, 'html.parser')
