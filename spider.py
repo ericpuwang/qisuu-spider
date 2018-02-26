@@ -26,7 +26,7 @@ def download():
         thread.start()
 
     while _duplex_queue.rightempty():
-        time.sleep(5)
+        time.sleep(1)
 
     while not _duplex_queue.rightempty():
         for thread in down_thread:
@@ -43,7 +43,7 @@ def parser():
         thread.start()
 
     while _duplex_queue.leftempty():
-        time.sleep(5)
+        time.sleep(1)
 
     while not _duplex_queue.leftempty():
         for thread in parse_thraed:

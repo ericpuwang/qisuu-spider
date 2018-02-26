@@ -41,6 +41,7 @@ class Downloader(Thread):
         self.download()
         if self.context:
             _duplex_queue.leftpush({'url': self.url, 'content': self.context})
+            print _duplex_queue.leftsize()
             print 'download \033[32m {url} \033[0m succ'.format(url=self.url,)
         else:
             print 'download \033[31m {url} \033[0m fail'.format(url=self.url,)

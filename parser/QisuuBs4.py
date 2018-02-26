@@ -21,6 +21,7 @@ class Parser(Thread):
     def __init__(self):
         self.url = _duplex_queue.leftpop()['url']
         self.content = _duplex_queue.leftpop()['content']
+        print 'url: ', self.url, 'content: ', self.content
         self.soup = BeautifulSoup(self.content, 'html.parser')
         self.mysql = MySQL('qisuu')
 

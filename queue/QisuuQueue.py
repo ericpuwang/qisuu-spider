@@ -28,6 +28,9 @@ class DuplexQueue(object):
     def leftempty(self):
         return self.leftqueue.empty()
 
+    def leftsize(self):
+        return self.leftqueue.qsize()
+
     def rightpush(self, element):
         self.rightqueue.put(element)
 
@@ -40,4 +43,5 @@ class DuplexQueue(object):
     def rightempty(self):
         return self.rightqueue.empty()
 
-    
+    def rightsize(self):
+        return self.rightqueue.qsize()
