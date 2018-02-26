@@ -11,7 +11,7 @@ import re
 
 _duplex_queue = DuplexQueue()
 
-class Parser(object):
+class Parser(Thread):
     '''
     BeautifulSoup
     获取每个页面上展示的所有小说
