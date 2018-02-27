@@ -56,5 +56,5 @@ if __name__ == '__main__':
     parse = threading.Thread(target=parser)
     parse.start()
 
-    if _duplex_queue.leftempty() and _duplex_queue.rigthempty():
+    if _duplex_queue.leftempty() and _duplex_queue.rightempty():
         sys.exit('qisuu spider finish')
