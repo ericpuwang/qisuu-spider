@@ -22,6 +22,7 @@ class Parser(Thread):
     def __init__(self):
         self.current_info = _duplex_queue.leftpop()
         self.mysql = MySQL('qisuu')
+        super(Parser, self).__init__()
 
     def getPageNum(self):
         # 获取每种小说类型的展示页数
