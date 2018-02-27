@@ -23,7 +23,7 @@ class DuplexQueue(object):
         try:
             return self.leftqueue.get_nowait()
         except Queue.Empty:
-            raise Queue.Empty
+            return None
 
     def leftempty(self):
         return self.leftqueue.empty()
@@ -38,7 +38,7 @@ class DuplexQueue(object):
         try:
             return self.rightqueue.get_nowait()
         except Queue.Empty:
-            raise Queue.Empty
+            return None
 
     def rightempty(self):
         return self.rightqueue.empty()

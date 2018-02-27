@@ -20,14 +20,7 @@ class Parser(Thread):
     root_url = 'https://www.qisuu.com'
 
     def __init__(self):
-        try:
-            current_info = _duplex_queue.leftpop()
-        except Queue.Empty:
-            return
-
-        self.url = current_info['url']
-        self.content = current_info['content']
-        self.soup = BeautifulSoup(self.content, 'html.parser')
+        self.current_info = _duplex_queue.leftpop()
         self.mysql = MySQL('qisuu')
 
     def getPageNum(self):
@@ -66,6 +59,13 @@ class Parser(Thread):
     解析页面内容
     '''
     def parse(self):
+        if not self.current_info:
+            return
+
+        self.url = current_info['url']
+        self.content = current_info['content']
+        self.soup = BeautifulSoup(self.content, 'html.parser')
+
         if re.match('index_\d+\.html', self.url.split('/')[-1]) or not self.url.split('/')[-1]:
             self._list()
         else:

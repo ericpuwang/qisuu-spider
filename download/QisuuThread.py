@@ -14,11 +14,7 @@ _duplex_queue = DuplexQueue()
 class Downloader(Thread):
 
     def __init__(self):
-        try:
-            self.url = _duplex_queue.rightpop()
-        except Queue.Empty:
-            return
-
+        self.url = _duplex_queue.rightpop()
         self.log = QisuuLog()
 
         super(Downloader, self).__init__()
@@ -41,6 +37,9 @@ class Downloader(Thread):
             self.log.error(err_message)
 
     def run(self):
+        if not self.url:
+            return
+        
         self.download()
         if self.context:
             _duplex_queue.leftpush({'url': self.url, 'content': self.context})
