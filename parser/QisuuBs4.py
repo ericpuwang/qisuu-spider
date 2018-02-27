@@ -92,5 +92,6 @@ class Parser(Thread):
             self.mysql.insert(sql)
             '''
             info = '{0} {1} {2} {3} {4} {5}'.format(self.name, self.url, self.image_url, self.size, self.status, self.author)
-            with open('../result', 'w+') as f:
+            with open('./result', 'a+') as f:
                 f.write(info)
+                f.write('\n')
