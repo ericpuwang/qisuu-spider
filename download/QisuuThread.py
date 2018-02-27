@@ -6,6 +6,7 @@ from threading import Thread
 from logs.QisuuLog import QisuuLog
 from queue.QisuuQueue import DuplexQueue
 import threading
+import Queue
 import time
 
 _duplex_queue = DuplexQueue()
@@ -13,7 +14,11 @@ _duplex_queue = DuplexQueue()
 class Downloader(Thread):
 
     def __init__(self):
-        self.url = _duplex_queue.rightpop()
+        try:
+            self.url = _duplex_queue.rightpop()
+        except Queue.Empty:
+            return
+
         self.log = QisuuLog()
 
         super(Downloader, self).__init__()
@@ -36,8 +41,6 @@ class Downloader(Thread):
             self.log.error(err_message)
 
     def run(self):
-        if not self.url:
-            return
         self.download()
         if self.context:
             _duplex_queue.leftpush({'url': self.url, 'content': self.context})
