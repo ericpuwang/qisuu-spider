@@ -55,11 +55,16 @@ class Parser(Thread):
     '''
     def _detail(self):
         info = self.soup.find('div', {'class':'detail_right'})
-        self.name = info.h1.text
-        self.image_url = None
-        self.size = info.ul.findAll('li')[3].text.split(u'：')[1]
-        self.author = info.ul.findAll('li')[5].text.split(u'：')[1]
-
+        try:
+            self.name = info.h1.text
+            self.size = info.ul.findAll('li')[1].text.split(u'：')[1]
+            self.status = info.ul.findAll('li')[4].text.split(u'：')[1]
+            self.author = info.ul.findAll('li')[5].text.split(u'：')[1]
+        except:
+            _duplex_queue.rightpush(self.url)
+        else:
+            relative_image_url = self.soup.find('div', {'class':'detail_pic'}).find('img')['src']
+            self.image_url = urljoin(self.root_url, relative_image_url)
     '''
     解析页面内容
     '''
@@ -86,4 +91,6 @@ class Parser(Thread):
                 )
             self.mysql.insert(sql)
             '''
-            print(self.name, self.content_url, self.image_url, self.size, self.author)
+            info = '{0} {1} {2} {3} {4} {5}'.format(self.name, self.url, self.image_url, self.size, self.status, self.author)
+            with open('../result', 'w+') as f:
+                f.write(info)
