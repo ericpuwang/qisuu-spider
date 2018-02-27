@@ -8,7 +8,11 @@ from queue.QisuuQueue import DuplexQueue
 from storage.mysql import MySQL
 import threading
 import Queue
+import sys
 import re
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 _duplex_queue = DuplexQueue()
 
