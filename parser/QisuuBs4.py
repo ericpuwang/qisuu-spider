@@ -75,7 +75,7 @@ class Parser(Thread):
             self._list()
         else:
             self._detail()
-
+            '''
             sql = ('INSERT INTO story(name, content_url, image_url, size, author) '
                 'VALUES({name}, {content_url}, {image_url}, {size}, {author})').format(
                     name=self.name,
@@ -85,3 +85,5 @@ class Parser(Thread):
                     author=self.author,
                 )
             self.mysql.insert(sql)
+            '''
+            print(self.name, self.content_url, self.image_url, self.size, self.author)
