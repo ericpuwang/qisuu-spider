@@ -56,7 +56,7 @@ class Parser(Thread):
     def _detail(self):
         info = self.soup.find('div', {'class':'detail_right'})
         try:
-            self.name = info.h1.text
+            self.name = re.match(u'《?.+》', info.h1.text).group()[1:-1]
             self.size = info.ul.findAll('li')[1].text.split(u'：')[1]
             self.status = info.ul.findAll('li')[4].text.split(u'：')[1]
             self.author = info.ul.findAll('li')[5].text.split(u'：')[1]

@@ -14,7 +14,13 @@ import time
 import sys
 
 _duplex_queue = DuplexQueue()
-_duplex_queue.rightpush('https://www.qisuu.com/soft/sort01/')
+
+seed_url = 'https://www.qisuu.com/soft/sort{number}/'
+for i in range(1, 11):
+    i = '0{0}'.format(i)
+    url = seed_url.format(number=i)
+    _duplex_queue.rightpush(url)
+
 _max_down_thread_num = 10
 _max_parse_thread_num = 5
 
