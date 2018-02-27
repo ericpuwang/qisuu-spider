@@ -7,6 +7,7 @@ from urlparse import urljoin
 from queue.QisuuQueue import DuplexQueue
 from storage.mysql import MySQL
 import threading
+import Queue
 import re
 
 _duplex_queue = DuplexQueue()
@@ -19,7 +20,11 @@ class Parser(Thread):
     root_url = 'https://www.qisuu.com'
 
     def __init__(self):
-        current_info = _duplex_queue.leftpop()
+        try:
+            current_info = _duplex_queue.leftpop()
+        except Queue.Empty:
+            return
+
         self.url = current_info['url']
         self.content = current_info['content']
         self.soup = BeautifulSoup(self.content, 'html.parser')
