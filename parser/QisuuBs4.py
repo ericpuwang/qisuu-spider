@@ -63,8 +63,8 @@ class Parser(Thread):
         if not self.current_info:
             return
 
-        self.url = current_info['url']
-        self.content = current_info['content']
+        self.url = self.current_info['url']
+        self.content = self.current_info['content']
         self.soup = BeautifulSoup(self.content, 'html.parser')
 
         if re.match('index_\d+\.html', self.url.split('/')[-1]) or not self.url.split('/')[-1]:
