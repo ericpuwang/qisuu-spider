@@ -65,6 +65,10 @@ class Parser(Thread):
         else:
             relative_image_url = self.soup.find('div', {'class':'detail_pic'}).find('img')['src']
             self.image_url = urljoin(self.root_url, relative_image_url)
+            info = '{0} {1} {2} {3} {4} {5}'.format(self.name, self.url, self.image_url, self.size, self.status, self.author)
+            with open('./result', 'a+') as f:
+                f.write(info)
+                f.write('\n')
     '''
     解析页面内容
     '''
@@ -91,7 +95,3 @@ class Parser(Thread):
                 )
             self.mysql.insert(sql)
             '''
-            info = '{0} {1} {2} {3} {4} {5}'.format(self.name, self.url, self.image_url, self.size, self.status, self.author)
-            with open('./result', 'a+') as f:
-                f.write(info)
-                f.write('\n')
