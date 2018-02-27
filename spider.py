@@ -11,6 +11,7 @@ from parser.QisuuBs4 import Parser
 from queue.QisuuQueue import DuplexQueue
 import threading
 import time
+import sys
 
 _duplex_queue = DuplexQueue()
 _duplex_queue.rightpush('https://www.qisuu.com/soft/sort01/')
@@ -25,10 +26,7 @@ def download():
     for thread in down_thread:
         thread.start()
 
-    while _duplex_queue.rightempty():
-        time.sleep(1)
-
-    while not _duplex_queue.rightempty():
+    while True:
         for thread in down_thread:
             if not thread.isAlive():
                 thread = Downloader()
@@ -45,7 +43,7 @@ def parser():
     for thread in parse_thraed:
         thread.start()
 
-    while not _duplex_queue.leftempty():
+    while True:
         for thread in parse_thraed:
             if not thread.isAlive():
                 thread = Parser()
@@ -57,3 +55,6 @@ if __name__ == '__main__':
 
     parse = threading.Thread(target=parser)
     parse.start()
+
+    if _duplex_queue.leftempty() and _duplex_queue.rigthempty():
+        sys.exit('qisuu spider finish')
