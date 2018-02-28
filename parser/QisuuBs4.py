@@ -65,7 +65,8 @@ class Parser(Thread):
         else:
             relative_image_url = self.soup.find('div', {'class':'detail_pic'}).find('img')['src']
             self.image_url = urljoin(self.root_url, relative_image_url)
-            info = '{0} {1} {2} {3} {4} {5}'.format(self.name, self.url, self.image_url, self.size, self.status, self.author)
+            self.type = self.soup.find('div', {'class': 'wrap position'}).findAll('a')[-2].text
+            info = '{0} {1} {2} {3} {4} {5} {6}'.format(self.name, self.url, self.image_url, self.size, self.status, self.author, self.type)
             with open('./result', 'a+') as f:
                 f.write(info)
                 f.write('\n')
