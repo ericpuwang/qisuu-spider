@@ -30,13 +30,17 @@ def download():
         down_thread.append(Downloader())
 
     for thread in down_thread:
+        thread.setDaemon(True)
         thread.start()
+        thread.join()
 
     while True:
         for thread in down_thread:
             if not thread.isAlive():
                 thread = Downloader()
+                thread.setDaemon(True)
                 thread.start()
+                thread.join()
 
 def parser():
     parse_thraed = []
@@ -47,13 +51,17 @@ def parser():
         parse_thraed.append(Parser())
 
     for thread in parse_thraed:
+        thread.setDaemon(True)
         thread.start()
+        thread.join()
 
     while True:
         for thread in parse_thraed:
             if not thread.isAlive():
                 thread = Parser()
+                thread.setDaemon(True)
                 thread.start()
+                thread.join()
 
 if __name__ == '__main__':
     down = threading.Thread(target=download)
