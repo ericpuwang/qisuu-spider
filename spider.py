@@ -22,7 +22,7 @@ for i in range(1, 11):
     _duplex_queue.rightpush(url)
 
 _max_down_thread_num = 5
-_max_parse_thread_num = 10
+_max_parse_thread_num = 5
 
 def download():
     down_thread = []
@@ -30,17 +30,13 @@ def download():
         down_thread.append(Downloader())
 
     for thread in down_thread:
-        thread.setDaemon(True)
         thread.start()
-        thread.join()
 
     while True:
         for thread in down_thread:
             if not thread.isAlive():
                 thread = Downloader()
-                thread.setDaemon(True)
                 thread.start()
-                thread.join()
 
 def parser():
     parse_thraed = []
@@ -51,17 +47,13 @@ def parser():
         parse_thraed.append(Parser())
 
     for thread in parse_thraed:
-        thread.setDaemon(True)
         thread.start()
-        thread.join()
 
     while True:
         for thread in parse_thraed:
             if not thread.isAlive():
                 thread = Parser()
-                thread.setDaemon(True)
                 thread.start()
-                thread.join()
 
 if __name__ == '__main__':
     down = threading.Thread(target=download)
