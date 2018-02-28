@@ -23,7 +23,8 @@ class MySQL(object):
                 message=e.message,
             )
             self.log.error(message)
-        self.cursor = self.db.cursor()
+        else:
+            self.cursor = self.db.cursor()
 
     def select(self, sql):
         try:

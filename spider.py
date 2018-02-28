@@ -21,8 +21,8 @@ for i in range(1, 11):
     url = seed_url.format(number=i)
     _duplex_queue.rightpush(url)
 
-_max_down_thread_num = 10
-_max_parse_thread_num = 5
+_max_down_thread_num = 5
+_max_parse_thread_num = 10
 
 def download():
     down_thread = []
