@@ -15,9 +15,8 @@ import sys
 
 _duplex_queue = DuplexQueue()
 
-seed_url = 'https://www.qisuu.com/soft/sort{number}/'
-for i in range(1, 11):
-    i = '0{0}'.format(i)
+seed_url = 'http://www.80txt.com/sort{number}/1.html'
+for i in range(1, 26):
     url = seed_url.format(number=i)
     _duplex_queue.rightpush(url)
 

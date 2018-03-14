@@ -21,16 +21,11 @@ class Parser(Thread):
     BeautifulSoup
     获取每个页面上展示的所有小说
     '''
-    root_url = 'https://www.qisuu.com'
 
     def __init__(self):
         self.current_info = _duplex_queue.leftpop()
         self.mysql = MySQL('qisuu')
         super(Parser, self).__init__()
-
-    def getPageNum(self):
-        # 获取每种小说类型的展示页数
-        self.page_num = len(self.soup.find('select', {'name':'select'}).findAll('option'))
 
     def run(self):
         self.parse()
@@ -39,27 +34,32 @@ class Parser(Thread):
     获取小说列表
     '''
     def _list(self):
-        page_url = self.soup.find('div', {'class': 'tspage'})
-        next_page_url = page_url.findAll('a')[-2]['href']
-        if not next_page_url.endswith('index_1.html'):
-            _duplex_queue.rightpush(urljoin(self.root_url, next_page_url))
+        try:
+            page_link = self.soup.find('div', {'class':'pagelink', 'id':'pagelink'})
+            next_page_url = page_link.find('a', {'class':'next'})['href']
+            _duplex_queue.rightpush(next_page_url)
+        except Exception, e:
+            _duplex_queue.rightpush(self.url)
 
-        story_list = self.soup.find('div', {'class': 'list'}).findAll('li')
+        story_list = self.soup.find('div', {'id': 'slist'}).findAll('div', {'class':'book_bg'})
         for story in story_list:
-            relative_content_url = story.find('a')['href']
-            self.content_url = urljoin(self.root_url, relative_content_url)
+            self.content_url = story.a['href']
             _duplex_queue.rightpush(self.content_url)
 
     '''
     获取小说的具体信息
     '''
     def _detail(self):
-        info = self.soup.find('div', {'class':'detail_right'})
+        info = self.soup.find('div', {'id':'soft_info_para'})
         try:
-            self.name = re.match(u'《?.+》', info.h1.text).group()[1:-1]
-            self.size = info.ul.findAll('li')[1].text.split(u'：')[1]
-            self.status = info.ul.findAll('li')[4].text.split(u'：')[1]
-            self.author = info.ul.findAll('li')[5].text.split(u'：')[1]
+            self.name = info.h1.text
+            detail_info = info.find('div', {'class':'soft_info_r'})
+            self.image_url = detail_info.img['src']
+            items = detail_info.findAll('li')
+            self.author = items[0].text.split(u'：')[1]
+            self.size = items[1].text.split(u'：')[1]
+            self.status = items[6].text.split(u'：')[1]
+            self.type = None
         except:
             _duplex_queue.rightpush(self.url)
         else:
@@ -67,7 +67,8 @@ class Parser(Thread):
             self.image_url = urljoin(self.root_url, relative_image_url)
             self.type = self.soup.find('div', {'class': 'wrap position'}).findAll('a')[-2].text
             info = '{0};{1};{2};{3};{4};{5};{6}'.format(
-                self.name, self.url, self.image_url, self.size, self.status, self.author, self.type
+                self.name, self.url, self.image_url, self.size,
+                self.status, self.author, self.type
             )
             with open('./result', 'a+') as f:
                 f.write(info)
@@ -83,7 +84,7 @@ class Parser(Thread):
         self.content = self.current_info['content']
         self.soup = BeautifulSoup(self.content, 'html.parser')
 
-        if re.match('index_\d+\.html', self.url.split('/')[-1]) or not self.url.split('/')[-1]:
+        if re.match('\d+\.html', self.url.split('/')[-1]):
             self._list()
         else:
             self._detail()
